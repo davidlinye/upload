@@ -1,0 +1,306 @@
+\documentclass[utf8,british]{cms-essay}
+\usepackage{comment}
+\usepackage[
+style=alphabetic
+% ,backend=bibtex  %% Enable if you cannot use Biber
+]{biblatex}
+
+%% Add other packages here
+% \usepackage{tikz-cd} %% tikz-cd for typesetting category theoretical diagrams
+\usepackage{dsfont}
+\usepackage{amssymb}
+
+%% Cleveref should be the last package loaded, unless you know what you are doing.
+\usepackage{cleveref}
+
+\DeclareMathOperator*{\Motimes}{\text{\raisebox{0.25ex}{\scalebox{0.65}{$\bigotimes$}}}}
+\newcommand{\open}{\textbf{$\mathds{O}$pen}(Petri) }
+\newcommand{\cmc}{\textbf{$\mathds{O}$pen}(CMC)}
+\newcommand{\rel}{\textbf{$\mathds{R}$el }}
+\newcommand{\csp}{\textbf{$\mathds{C}$sp}}
+
+\ExecuteBibliographyOptions{sorting=nyt, maxnames=99}
+\addbibresource{cms-essay.bib}
+
+% Please enter your information here
+\essayAuthor{David Lin}
+\essayPaper{Open Petri Nets}
+\essayYear{23-24}
+
+\begin{document}
+\maketitle{}
+
+\section{Introduction}
+\label{sec:introduction}
+
+This essay assesses the paper 'Open Petri Nets' by Baez and Master \cite{baez2020open}.\\
+
+Petri nets are used often in the biological field, where they simulate biological processes to discover properties of a system. These Petri nets function similar to an finite automaton, containing states and transitions, where states are connected by (un)directed transitions. The main difference between automata and Petri nets is that within the context of Petri nets, a transition is now also a state instead of being a connection between states. 
+There exists no valid Petri net with arrows directly between places or between transitions. Furthermore, there are tokens that can quantify places and transitions. These tokens traverse through places and transitions, which in a biologically accurate Petri net would represent the presence of molecules or proteins and the chemical reactions that create, modify or decompose these molecules or proteins respectively.
+
+A problem with Petri nets is that they are closed, meaning that there is no token inflow or outflow to a Petri net system, making all tokens restricted to that system. By defining open Petri nets, which do have inflow and outflow for tokens, compositions of different Petri nets can easily be made and through category theory, the formal construction of open Petri net compositions can be well defined.
+
+In the context of the course, this essay shows a practical application of category theory by defining the open Petri net category, using morphisms between objects within categories and composing multiple objects to form a singular object. With that, we are able to connect multiple Petri nets through these properties of the defined categories.
+
+A Petri net $P$ is a presentation of category $FP$, with places and transitions of $P$ which can be used to generate objects and morphisms of $FP$. An open Petri net is a Petri net, but there exists states in the Petri net, where tokens can flow in or out. This resembles the introduction or depletion of molecules and nutrients in the environment of a biological system. This property of inflow and outflow of tokens allows us to connect multiple systems together into a larger Petri net representing connected biological systems. 
+
+% There is a symmetric monoidal category where the objects are sets and the morphisms are rquivalence classes of open petri nets.
+
+To provide some insight, we give a simple example. Given a Petri net with places $\{A, B, C, \\
+D\}$ and transitions $\{\alpha\}$, with arrows $\{(A, \alpha), (B, \alpha), (\alpha, C), (\alpha, D)\}$, and arbitrary functions X and Y, which go into the set of places. X and Y show the places where tokens can be inputs and/or outputs of the Petri net, making the Petri net 'open'. This open Petri net is defined as $P: X \nrightarrow Y$, where X and Y map to a subset of places in the Petri net where tokens can flow in or out. This example can be seen in Figure \ref{fig:pn1}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.425\textwidth]{pn1.png}
+    \caption{An example open Petri net $P: X \nrightarrow Y$, with arbitrary functions from $X$ to $\{A, B\}$ and $Y$ to $\{C, D\}$.}
+    \label{fig:pn1}
+\end{figure}
+
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.425\textwidth]{pn2.png}
+    \caption{An example open Petri net $Q: Y \nrightarrow Z$, with arbitrary functions from $Y$ to $\{E\}$ and $Z$ to $\{F\}$.}
+    \label{fig:pn2}
+\end{figure}
+
+Given a second Petri net Q, with places $\{E, F\}$ and transitions $\{\beta. \gamma\}$, and arrows $\{(E, \beta), (\beta, F),\\
+(F, \gamma), (\gamma, E)\}$. The Petri net can be seen in Figure \ref{fig:pn2}.
+
+Creating the composition of the two open Petri nets is intuitively given as $Y$ maps to both $\{C, D\} \in P$ and $\{E\} \in Q$, where tokens can flow between $P$ and $Q$ through $\{C, D\}$ and $\{E\}$. In fact, because $Y$ is now just a pathway between $\{C, D\}$ and $E$, $Y$ can be completely removed, and transitions $C, D$ and $E$ can be merged, resulting in the Petri net in Figure \ref{fig:pn3}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.55\textwidth]{pn3.png}
+    \caption{Open Petri net $Q \odot P: X \nrightarrow Z$}
+    \label{fig:pn3}
+\end{figure}
+\newpage
+To formalize the above construction, so-called double categories are used, which were introduced by Ehresmann \cite{Ehresmann1963,Ehresmann1965}.
+We use double categories to run two Petri nets in parallel instead of sequentially. 
+Within double categories, we call $X_1, X_2, Y_1$ and $Y_2$ 'objects', mappings $f: X_1 \nrightarrow X_2$ and $g: Y_1 \nrightarrow Y_2$ 'vertical morphisms', mappings $M: X_1 \nrightarrow Y_1$ and $N: X_2 \nrightarrow Y_2$ 'horizontal 1-morphisms' and $\alpha: M \Rightarrow N$ a '2-morphism'.
+This '2-morphism' is a property of a double category \open, which will be constructed in Section \ref{sec:open}. Furthermore, in Section \ref{sec:cmc} the construction of CMC is defined. In Section \ref{sec:os}, the operational semantics will be assessed, including the construction of a double category \cmc and a map \csp, mapping \open to \cmc. In the scope of this essay, the reachability relations will be shortly mentioned in the conclusion, but not thoroughly discussed as was done in the original paper.
+
+% Provide an introduction that briefly states the motivation of the paper and what to find
+% where in your essay.
+
+% You can choose the structure of your essay the way you see fit, but it should provide
+% \begin{itemize}
+% \item brief background to understand the paper, but only what is not treated in the course or
+%   in the standard curriculum (ask in case of doubt);
+% \item summary of the paper (this may span over several sections); and
+% \item positioning of the paper within the course (this may be interwoven with the summary,
+%   if clearly stated).
+% \end{itemize}
+
+
+% \section{First section}
+% \label{sec:first-section}
+
+% You can refer as usual to article~\cite{Pavlovic06:TestingSem} or with the more sophisticated
+% biblatex commands also to authors etc.: \textcite{Pavlovic06:TestingSem}.
+% References are best type set with cleveref, like so: \cref{sec:conclusion}.
+% You can also write theorems etc.
+% \begin{theorem}
+%   \label{thm:eulers-identity}
+%   \begin{equation*}
+%     e^{i \pi} + 1 = 0
+%   \end{equation*}
+% \end{theorem}
+% \begin{proof}
+%   This follows immediately from $e^{i \pi} = \cos(\pi) + i \sin(\pi) = -1 + 0 = -1$.
+% \end{proof}
+% And you can refer to them as \cref{thm:eulers-identity}.
+% You can do the same for equations and aligned equations.
+% \begin{align}
+%   x + (y + z) & = (x + y) + z
+%   \label{eq:assoc}
+%   \\
+%   x + y = y + x
+%   \label{eq:comm}
+% \end{align}
+% Like so: \cref{eq:assoc,eq:comm}.
+
+% You can draw diagrams with \texttt{tikz-cd} or even easier with \url{https://q.uiver.app/}.
+% And you can of course use all the maths typesetting that you want:
+% $\mathcal{C}_{2}, \mathbf{Set}, \mathrm{ABC}$.
+
+
+
+\section{Definition of \open}
+\label{sec:open}
+The double category \open has horizontal 1-morphisms which are open Petri nets. Define functor $L: \mathrm{Set} \rightarrow \mathrm{Petri}$, mapping any set $S$ to a Petri net, containing places $S$ and $L$ being a left adjoint.
+
+\definition{Let $\mathrm{CommMon}$ be the category of commutative monoids and monoid homomorphisms.}
+
+\definition{Let $\mathds{N}: \mathrm{Set} \rightarrow \mathrm{Set}$ be the free commutative monoid monad given by the composite $KJ$, with $K: \mathrm{CommMon} \rightarrow \mathrm{Set}$, and $J: \mathrm{Set} \rightarrow \mathrm{CommMon}$ the left adjoint of $K$. }
+
+This $\mathds{N}[X]$ is the set of formal finite linear combinations of elements of some set $X$ having natural number coefficients. For example, $\mathds{N}[\{a,b\}]$ contains $3a + 6b$.
+
+\definition{A Petri net is defined as a pair of functions as follows: \[T \mathrel{\mathop{\rightrightarrows}^{s}_{t} } \mathds{N}[S] \] with $T$ the set of transitions, $S$ the set of places, $s$ the source function and $t$ the target function. $\mathds{N}[S]$, which contains the places, each multiplied by a natural number, represents the states in the Petri net containing that number of tokens.}
+
+\definition{The Petri net morphism from Petri net $s,t: T \rightarrow \mathds{N}[S]$ to Petri net $s',t': T' \rightarrow \mathds{N}[S']$ is a pair of functions $(f,g)$, with $f:T \rightarrow T', g: S \rightarrow S'$ such that the following diagrams commute:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{petrimorphism.png}
+\end{figure}
+}
+
+\definition{Composition of \textsc{Petri}, being the category of Petri nets and Petri net morphisms, is defined as follows
+\[(f,g) \circ (f', g') = (f \circ f', g \circ g')\]
+}
+
+\definition{Let $L: \mathrm{Set} \rightarrow \mathrm{Petri}$ be the functor defined on sets $\emptyset, X, Y, \mathds{N}[X], \mathds{N}[Y]$ and functions $f, \mathds{N}[f]$:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.3\textwidth]{opn.png}
+\end{figure}
+}
+
+The above maps sets to Petri nets. The two empty sets represent the transitions in the Petri net, which there are none of when coming from a map containing only $X$ and $Y$, which are the sets for places.
+
+% \lemma{The functor L has a right adjoint $R: \mathrm{Petri} \rightarrow \mathrm{Set}$ that acts as follows on Petri nets and Petri net morphisms:
+
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.3\textwidth]{opn2.png}
+% \end{figure}
+% } 
+% \textit{Proof.} Given any set $X$ and Petri net $P = (s,t: T \rightarrow \mathds{N}[S])$, the following natural isomorphisms are derived:
+% \[
+% \mathrm{hom}_{Petri}(L(X), T \mathrel{\mathop{\rightrightarrows}^{s}_{t} } \mathds{N}[S]) 
+% \overset{\mathrm{apply\ }L(X)}{\cong}
+% \mathrm{hom}_{Petri}(\emptyset \rightrightarrows \mathds{N}[X], T \mathrel{\mathop{\rightrightarrows}^{s}_{t} } \mathds{N}[S])\\\]
+% \[
+% \overset{\mathrm{Petri} \rightarrow \mathrm{Set}}{\cong}
+% \mathrm{hom}_{Set}(X,S)
+% \overset{\mathrm{replace\ }S}{\cong}
+% \mathrm{hom}_{Set}(X, R(T \mathrel{\mathop{\rightrightarrows}^{s}_{t} } \mathds{N}[S])) \hspace{2cm}\square
+% \]
+% where $\mathrm{Petri} \rightarrow \mathrm{Set}$ is an isomorphism coming from pair $(f,g)$, with $f: \emptyset \rightarrow T, \mathds{N}[g]: \mathds{N}[X] \rightarrow \mathds{N}[S]$ and $\emptyset$ in the initial $f$ exists uniquely.
+
+% We define a cospan from $X$ and $Y$ to its set of places $RP$ (Petri $\rightarrow$ Set), where both $X$ and $Y$ map to $RP$. We can then formally define an open Petri net in a similar manner:
+\definition{An \textbf{open Petri net} $P: X \nrightarrow Y$ is a cospan diagram in Petri of the form
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.3\textwidth]{opndef.png}
+\end{figure}
+
+\label{def6}
+}
+
+where $i$ and $o$ are labels for the mappings to $P$.
+
+\definition{A symmetric monoidal category is a category that consists of
+\label{smc}
+\begin{itemize}
+    \item A category $\mathcal{C}$, containing objects, morphisms and morphism compositions
+    \item The tensor product of objects, where for all $A, B \in \mathcal{C}, A \Motimes B$ is in $\mathcal{C}$
+    \item The unit object $I$, where for any object $A$, there exists isomorphisms $I \Motimes A \cong A$ and $A \Motimes I \cong A$
+    \item The associativity isomorphism, where for any objects $A, B, C \in \mathcal{C}$, $(A \Motimes B) \Motimes C \rightarrow A \Motimes (B \Motimes C)$ holds.
+    \item the symmetry isomorphism, where for any objects $A, B \in \mathcal{C}$, $A \Motimes B \rightarrow B \Motimes A$ holds.
+\end{itemize}
+}
+With the above, the double category \open can be defined as follows:
+
+\theorem{There is a symmetric monoidal double category \open for which:
+\begin{itemize}
+    \item objects are sets
+    \item vertical 1-morphisms are functions from a set $X$ to $X'$ or $Y$ to $Y'$
+    \item horizontal 1-morphisms from a set $X$ to a set $Y$ are open Petri nets
+    \item 2-morphisms $\alpha: P \Rightarrow P'$ are commutative diagrams. This diagram shows that a 2-morphism exists between Petri nets $P$ and $P'$ when $LX$ and $LY$ map to $P$, $LX'$ and $LY'$ map to $P'$ and there are morphisms $f: X \rightarrow X'$ and $g: Y \rightarrow Y'$.
+    \label{thm7}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.35\textwidth]{openpetri.png}
+    \end{figure}
+    \item The composition of vertical 1-morphisms 
+    \[LX \mathrel{\mathop{\rightarrow}^{i_1}} P \mathrel{\mathop{\leftarrow}^{o_1}} LY\]
+    and
+    \[LY \mathrel{\mathop{\rightarrow}^{i_2}} Q \mathrel{\mathop{\leftarrow}^{o_2}} LZ\]
+    is done by merging $LY$, creating a Petri net $P +_{LY} Q$, where $+_{LY}$ is the operator that merges two morphisms as $LY$ morphs to both $P$ and $Q$, and then creating a pushout square of $LY, P, Q $ and $P +_{LY} Q$ as follows
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.7\textwidth]{pushout.png}
+    \end{figure}
+
+    \item The horizontal composition of 2-morphisms
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.7\textwidth]{horcomp.png}
+    \end{figure}
+
+    is given by creating the 2-morphism $\alpha +_{Lg} \beta$, where $+_{Lg}$ is the operator that merges two morphisms as $Lg$ morphs $LY$ to $LY'$, $LY$ and $LY'$ morph to $\{P,Q\}$ and $\{P',Q'\}$ respectively, and $\alpha$ and $\beta$ are morphisms between these objects. The composition is as the following diagram:
+    
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.6\textwidth]{horcomp2.png}
+    \end{figure}
+    
+\end{itemize}
+}
+
+\newpage
+
+From the above composition, we now have a formally defined method of combining multiple Petri nets, which was the goal of the given example at the beginning of this essay. The original paper continues about the Petri net definition $FP$, with the functor $F: \mathrm{Petri} \rightarrow \mathrm{CMC}$, where a commutative monoidal category (CMC) is the same as a symmetric monoidal category \ref{smc}, except for the symmetry isomorphism. Instead of an isomorphism, the commutativity is already present in the set by $A \Motimes B \cong B \Motimes A$. 
+
+
+Outside of the scope of this essay, there is the reachability problem: exists a morphism from one object of FP to another? This can be translated to: Can a given Petri net be transformed into another Petri net? This is interesting as it can be used to compare and connect biological systems and analyse if certain chemical processes are related to each other.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+The proposed categorisation of Petri nets shows us that combining multiple Petri nets is well defined, and therefore that the applicability of category theory on Petri nets is possible and useful.
+
+This essay has only covered the basics of the open Petri net category. Uncovered but relevant topics are the reachability problem, which allows for biological system comparison, the commutative monoidal category, which allows for simplification of operations (being equivalent to a category with trivial associator and unitors), whilst retaining symmetry, and the operational semantics, making it possible to form a commutative diagram between Set, Petri and CMC. 
+
+Open Petri nets allow for future work, where reachability semantics for combined open Petri nets can be developed and defined, as well as apply this to different kinds of Petri nets \cite{baez2020open}.
+
+% The proposed categorisation of Petri nets is applicable to multiple kinds of Petri nets, including timed Petri nets and colored Petri nets with guards. The operational semantics allow for reachability relations being able to be computed compositionally. Approximating the reachability of Petri nets is therefore no longer relevant. Also, it opens up reachability semantics for open Petri nets which can be generalized in future work.
+
+\printbibliography{}
+
+
+\begin{comment}
+    Free symmetric monoidal category
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+\end{comment}
+
+
+
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
